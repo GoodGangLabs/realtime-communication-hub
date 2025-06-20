@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  wss-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ggls/wss-server:latest
+    container_name: wss-server
+    ports:
+      - "8765:8765"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/docs"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 10s 
