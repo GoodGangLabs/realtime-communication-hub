@@ -45,3 +45,24 @@ class ConnectionManager:
                 if ws:
                     result.append(ws)
         return result
+    
+    def get_connection_status(self) -> str:
+        """현재 연결 상태를 문자열로 반환"""
+        if not self.connections:
+            return "No active connections"
+        
+        status_lines = []
+        groups = {}
+        for (group, client_id), ws in self.connections.items():
+            if group not in groups:
+                groups[group] = []
+            groups[group].append(client_id)
+        
+        for group, clients in groups.items():
+            status_lines.append(f"Group '{group}': {clients}")
+        
+        return f"Total: {len(self.connections)} connections. " + " | ".join(status_lines)
+    
+    def get_all_websockets(self) -> List[WebSocket]:
+        """모든 웹소켓 연결을 반환"""
+        return list(self.connections.values())
